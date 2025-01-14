@@ -170,8 +170,8 @@ const FaceConstellationApp = () => {
   
         {/* Footer */}
         <footer className="fixed bottom-0 left-0 right-0 bg-black/40 backdrop-blur-sm text-white text-center py-2 text-xs md:text-sm">
-          © {new Date().getFullYear()} Face Constellation Creator
-          <span className="hidden md:inline"> | 📸 Instagram: wildroboot</span>
+          © {new Date().getFullYear()} Face Constellation Creator 
+          <span className="block md:inline"> | 📸 Instagram: wildroboot</span>
         </footer>
       </div>
     </div>

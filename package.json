@@ -1,5 +1,6 @@
 {
   "name": "facial-moles",
+  "homepage": "httpa://HassanSalam7.github.io/face-constellation/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,12 +8,17 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview --https",
+    "prdeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "face-api.js": "^0.22.2",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "@radix-ui/react-slot": "latest",
+    "class-variance-authority": "latest",
+    "gh-pages": "^6.3.0",
+    "lucide-react": "^0.263.1",
+    "react": "latest",
+    "react-dom": "latest"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

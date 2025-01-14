@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const ConstellationProcessor = ({ imageSrc, onComplete }) => {
   const canvasRef = useRef(null);
@@ -7,35 +8,53 @@ const ConstellationProcessor = ({ imageSrc, onComplete }) => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [originalImage, setOriginalImage] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     const img = new Image();
     img.onload = () => {
-      const maxWidth = 800;
-      const maxHeight = 600;
-      let newWidth = img.width;
-      let newHeight = img.height;
+      try {
+        const maxWidth = 800;
+        const maxHeight = 600;
+        let newWidth = img.width;
+        let newHeight = img.height;
 
-      if (newWidth > maxWidth) {
-        newWidth = maxWidth;
-        newHeight = (img.height * maxWidth) / img.width;
+        // Calculate dimensions while maintaining aspect ratio
+        if (newWidth > maxWidth) {
+          newWidth = maxWidth;
+          newHeight = (img.height * maxWidth) / img.width;
+        }
+
+        if (newHeight > maxHeight) {
+          newHeight = maxHeight;
+          newWidth = (img.width * maxHeight) / img.height;
+        }
+
+        setDimensions({ width: newWidth, height: newHeight });
+        setOriginalImage(img);
+
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        // Limit canvas size to prevent payload issues
+        canvas.width = Math.min(img.width * 2, 2048);
+        canvas.height = Math.min(img.height * 2, 2048);
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        setError(null);
+      } catch (err) {
+        setError("Error processing image. Please try a different image.");
+        console.error('Image processing error:', err);
       }
-
-      if (newHeight > maxHeight) {
-        newHeight = maxHeight;
-        newWidth = (img.width * maxHeight) / img.height;
-      }
-
-      setDimensions({ width: newWidth, height: newHeight });
-      setOriginalImage(img);
-
-      const canvas = canvasRef.current;
-      canvas.width = img.width * 3;
-      canvas.height = img.height * 3;
-
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     };
+    
+    img.onerror = () => {
+      setError("Error loading image. Please try again.");
+    };
+    
     img.src = imageSrc;
   }, [imageSrc]);
 
